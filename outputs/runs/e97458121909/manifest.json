@@ -1,0 +1,13 @@
+{
+  "run_id": "e97458121909",
+  "config_path": "configs/_smoke.json",
+  "schema_version": "1.0",
+  "seed_master": 42,
+  "n_replications": 2,
+  "n_topics": 12,
+  "outputs": {
+    "topic_metrics": "topic_metrics.csv",
+    "delta_metrics": "delta_metrics.csv",
+    "global_metrics": "global_metrics.csv"
+  }
+}

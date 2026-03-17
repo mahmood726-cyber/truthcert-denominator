@@ -1,0 +1,13 @@
+{
+  "run_id": "f778092f0316",
+  "config_path": "configs/suite_12topics_phase1.json",
+  "schema_version": "1.0",
+  "seed_master": 42,
+  "n_replications": 50,
+  "n_topics": 12,
+  "outputs": {
+    "topic_metrics": "topic_metrics.csv",
+    "delta_metrics": "delta_metrics.csv",
+    "global_metrics": "global_metrics.csv"
+  }
+}
