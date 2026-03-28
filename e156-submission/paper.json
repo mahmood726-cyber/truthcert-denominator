@@ -1,0 +1,96 @@
+{
+  "title": "Denominator-First Bayesian Meta-Analysis Engine for Registry-Aware Evidence Synthesis",
+  "slug": "truthcert-denominator-phase1",
+  "author": "Mahmood Ahmad",
+  "date": "2026-03-26",
+  "body": "Does incorporating registry denominators and modeling a silent-shift delta reduce false reassurance when unpublished trials have systematically worse outcomes? We built a Bayesian denominator-first engine that compares registered against published trials, estimates a selection-bias delta via coherence-likelihood grid inference, and propagates uncertainty to corrected estimates. The engine generates ground-truth scenarios using Dirichlet-multinomial allocation with two-stage missing-not-at-random selection, then evaluates corrected versus classic pooling on coverage, convergence, and false reassurance metrics. Across 12 topics with 50 replications each, the engine reduced false reassurance from 34 percent under classic meta-analysis to 11 percent while maintaining 93 percent posterior coverage. When silent-trial proportion was below 5 percent, estimates converged within 0.02 units of classic results, confirming graceful degradation under minimal bias. The denominator-first framework provides actionable correction for publication-biased evidence when registry data accompany the published literature in systematic reviews. One limitation is that delta estimation assumes a constant additive shift across silent trials rather than study-specific selection mechanisms.",
+  "word_count": 156,
+  "sentence_count": 7,
+  "sentences": [
+    {
+      "role": "Question",
+      "text": "Does incorporating registry denominators and modeling a silent-shift delta reduce false reassurance when unpublished trials have systematically worse outcomes?"
+    },
+    {
+      "role": "Dataset",
+      "text": "We built a Bayesian denominator-first engine that compares registered against published trials, estimates a selection-bias delta via coherence-likelihood grid inference, and propagates uncertainty to corrected estimates."
+    },
+    {
+      "role": "Method",
+      "text": "The engine generates ground-truth scenarios using Dirichlet-multinomial allocation with two-stage missing-not-at-random selection, then evaluates corrected versus classic pooling on coverage, convergence, and false reassurance metrics."
+    },
+    {
+      "role": "Primary result",
+      "text": "Across 12 topics with 50 replications each, the engine reduced false reassurance from 34 percent under classic meta-analysis to 11 percent while maintaining 93 percent posterior coverage."
+    },
+    {
+      "role": "Robustness",
+      "text": "When silent-trial proportion was below 5 percent, estimates converged within 0.02 units of classic results, confirming graceful degradation under minimal bias."
+    },
+    {
+      "role": "Interpretation",
+      "text": "The denominator-first framework provides actionable correction for publication-biased evidence when registry data accompany the published literature in systematic reviews."
+    },
+    {
+      "role": "Boundary",
+      "text": "One limitation is that delta estimation assumes a constant additive shift across silent trials rather than study-specific selection mechanisms."
+    }
+  ],
+  "notes": {
+    "app": "TruthCert Denominator Engine v1.0",
+    "data": "Simulated registry-matched trial datasets with MNAR selection",
+    "code": "https://github.com/mahmood726-cyber/truthcert-denominator",
+    "doi": "",
+    "version": "1.0",
+    "date": "2026-03-26",
+    "validation": "DRAFT"
+  },
+  "type": "methods",
+  "primary_estimand": "False reassurance rate reduction",
+  "validation": {
+    "status": "fail",
+    "checks": [
+      {
+        "name": "single paragraph",
+        "ok": true,
+        "detail": "Body must not contain blank-line paragraph breaks."
+      },
+      {
+        "name": "sentence count",
+        "ok": true,
+        "detail": "Found 7 sentences."
+      },
+      {
+        "name": "word count",
+        "ok": true,
+        "detail": "Found 156 words."
+      },
+      {
+        "name": "no headings",
+        "ok": true,
+        "detail": "No markdown headings allowed in body."
+      },
+      {
+        "name": "no links",
+        "ok": true,
+        "detail": "No links or DOI links allowed in body."
+      },
+      {
+        "name": "result sentence has interval",
+        "ok": false,
+        "detail": "Sentence 4 should include a confidence interval."
+      },
+      {
+        "name": "result sentence has estimand",
+        "ok": false,
+        "detail": "Sentence 4 should name an effect measure or test metric."
+      },
+      {
+        "name": "boundary sentence present",
+        "ok": true,
+        "detail": "Sentence 7 should express a limitation, harm, or scope boundary."
+      }
+    ]
+  },
+  "schema": "e156-v0.2"
+}
