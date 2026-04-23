@@ -7,3 +7,11 @@ output/
 .DS_Store
 .pytest_cache/
 NUL
+
+# Sentinel pre-push hook output (auto-generated per session)
+review-findings.md
+review-findings.jsonl
+sentinel-findings.md
+sentinel-findings.jsonl
+STUCK_FAILURES.md
+STUCK_FAILURES.jsonl
