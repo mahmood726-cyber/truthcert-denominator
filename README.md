@@ -92,6 +92,42 @@ outputs/runs/{run_id}/
 2. Coverage **>= 0.90** in moderate settings (T01, T02, T11).
 3. Convergence: mean |engine - classic| < 0.05 when silent rate < 15%.
 
+These are evaluated automatically against a completed run by
+`sim/check_acceptance.py`, which reads the run's `topic_metrics.csv`:
+
+```bash
+# Human-readable report (exit 0 = all pass, 1 = a target failed, 2 = error)
+python -m sim.check_acceptance --run outputs/runs/<run_id>
+
+# Machine-readable output for CI gating
+python -m sim.check_acceptance --run outputs/runs/<run_id> --json
+```
+
+The topics and thresholds are overridable (e.g. `--coverage-min`,
+`--high-silence-topics`, `--fr-reduction-pct`) so the same tool can gate
+alternative configs.
+
+## Quick Demo
+
+To run the whole pipeline end-to-end quickly (fast 12-topic smoke config,
+2 replications, ~5-10s) and see the acceptance report:
+
+```bash
+python demo.py
+```
+
+This runs the suite into `demo_out/` (gitignored, so the curated runs in
+`outputs/` are untouched) and then evaluates the acceptance targets. The
+smoke config uses only 2 replications, so it is intentionally noisier than
+the full 50-replication suite -- it demonstrates that the pipeline runs
+reproducibly, not that results are certified. Use the full config for
+acceptance decisions:
+
+```bash
+python -m sim.run_suite --config configs/suite_12topics_phase1.json --out outputs/runs
+python -m sim.check_acceptance --run outputs/runs/<run_id>
+```
+
 ## Ablation Modes
 
 - **denom_only**: Ignore delta; decide solely from silent-rate thresholds.

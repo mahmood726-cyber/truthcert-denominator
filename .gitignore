@@ -4,6 +4,7 @@ __pycache__/
 .RData
 *.docx
 output/
+demo_out/
 .DS_Store
 .pytest_cache/
 NUL
