@@ -72,7 +72,32 @@ def _load_topic_metrics(run_dir: Path) -> pd.DataFrame:
         raise ValueError(
             f"topic_metrics.csv missing required columns: "
             f"{sorted(missing)} (found: {sorted(df.columns)})")
+    ids = df["topic_id"]
+    if (not ids.map(lambda value: isinstance(value, str) and bool(value.strip())
+                    and value == value.strip()).all() or ids.duplicated().any()):
+        raise ValueError("topic_id must contain unique, non-empty identifiers without surrounding whitespace")
+    for column in sorted(required - {"topic_id"}):
+        try:
+            values = pd.to_numeric(df[column], errors="raise")
+        except (TypeError, ValueError) as exc:
+            raise ValueError(f"{column} must contain numeric metrics or missing values") from exc
+        present = values.dropna()
+        # Missing measurements remain undefined; invalid measurements must not
+        # be dropped from the convergence average or interpreted as success.
+        upper = None if column == "convergence_mean_abs_diff" else 1.0
+        if (not present.map(_finite).all() or (present < 0).any()
+                or (upper is not None and (present > upper).any())):
+            domain = "finite and non-negative" if upper is None else "between 0 and 1"
+            raise ValueError(f"{column} must be {domain} (or missing)")
+        df[column] = values
     return df
+
+
+def _validate_targets(name: str, topics: List[str]) -> None:
+    if (not topics or any(not isinstance(t, str) or not t.strip()
+                          or t != t.strip() for t in topics)
+            or len(set(topics)) != len(topics)):
+        raise ValueError(f"{name} must contain unique, non-empty topic IDs")
 
 
 def check_acceptance(
@@ -97,12 +122,24 @@ def check_acceptance(
     per-target result dicts. Topics named in a target's scope that are
     absent from the run are reported as ``missing`` and fail that target.
     """
+    for name, value, upper in [("fr_reduction_pct", fr_reduction_pct, 100.0),
+                               ("coverage_min", coverage_min, 1.0),
+                               ("convergence_max", convergence_max, None)]:
+        if (isinstance(value, bool) or not isinstance(value, (int, float))
+                or not _finite(value) or value < 0
+                or (upper is not None and value > upper)):
+            raise ValueError(f"{name} must be a finite non-negative threshold"
+                             + (f" no greater than {upper}" if upper is not None else ""))
+    if isinstance(high_silence_topics, str) or isinstance(moderate_topics, str):
+        raise ValueError("topic scopes must be lists of topic IDs, not strings")
     high_silence_topics = list(high_silence_topics
                                if high_silence_topics is not None
                                else DEFAULT_HIGH_SILENCE_TOPICS)
     moderate_topics = list(moderate_topics
                            if moderate_topics is not None
                            else DEFAULT_MODERATE_TOPICS)
+    _validate_targets("high_silence_topics", high_silence_topics)
+    _validate_targets("moderate_topics", moderate_topics)
 
     df = _load_topic_metrics(Path(run_dir))
     by_topic = {row["topic_id"]: row for _, row in df.iterrows()}
@@ -122,7 +159,8 @@ def check_acceptance(
         e = row["engine_false_reassurance_mean"]
         if not _finite(c) or not _finite(e):
             t1_details.append({"topic_id": tid, "status": "undefined",
-                               "classic_fr": c, "engine_fr": e})
+                               "classic_fr": float(c) if _finite(c) else None,
+                               "engine_fr": float(e) if _finite(e) else None})
             t1_pass = False
             continue
         c, e = float(c), float(e)
@@ -167,7 +205,7 @@ def check_acceptance(
         cov = row["coverage_engine_mean"]
         if not _finite(cov):
             t2_details.append({"topic_id": tid, "status": "undefined",
-                               "coverage": cov})
+                               "coverage": None})
             t2_pass = False
             continue
         cov = float(cov)
