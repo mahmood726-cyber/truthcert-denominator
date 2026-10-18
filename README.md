@@ -95,6 +95,11 @@ outputs/runs/{run_id}/
 These are evaluated automatically against a completed run by
 `sim/check_acceptance.py`, which reads the run's `topic_metrics.csv`:
 
+The checker rejects duplicate or blank topic IDs, out-of-range metrics,
+non-finite measurements, empty target scopes and invalid thresholds. Missing
+measurements remain explicitly undefined; they cannot satisfy a target. Invalid
+input exits with status 2 before a PASS verdict can be produced.
+
 ```bash
 # Human-readable report (exit 0 = all pass, 1 = a target failed, 2 = error)
 python -m sim.check_acceptance --run outputs/runs/<run_id>
